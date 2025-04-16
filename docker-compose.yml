@@ -1,0 +1,27 @@
+services:
+  ship_coordinates_db:
+    image: postgres:15
+    container_name: ship_coordinates_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  ship_coordinates_api:
+    build: .
+    container_name: ship_coordinates_api
+    tty: true
+    stdin_open: true
+    environment:
+      RAILS_ENV: development
+      RAILS_MASTER_KEY: '455aac53c20aeadfd29e140b9fd2b544'
+    volumes:
+      - ".:/usr/src/app"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ship_coordinates_db
+
+volumes:
+  postgres_data:
