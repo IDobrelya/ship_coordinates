@@ -18,6 +18,6 @@ class Ship < ApplicationRecord
   end
 
   def last_position
-    last_positions.last.position
+    positions.last_positions&.first
   end
 end
