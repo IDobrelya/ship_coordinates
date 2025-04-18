@@ -13,11 +13,15 @@ module V1
       end
 
       def position
-        position = { x: params[:x], y: params[:y] }
-        new_position_params = { position: position, status: 'green', speed: 10, time: params[:time]}
-        @ship.positions.create(new_position_params)
+        previous_position = @ship.last_position
+        @current_position = @ship.positions.new(position: position_params, time: params[:time])
 
-        render json: { time: params[:time], x: params[:x], y: params[:y] }, status: :created
+        @ds = DispatcherService.new(@ship.id, @current_position, previous_position)
+        @ds.call
+
+        @current_position.speed = @ds.speed[:main_speed]
+        @current_position.status = @ds.status
+        @current_position.save
       end
 
       private
@@ -31,7 +35,7 @@ module V1
       end
 
       def position_params
-        params.permit(:time, :x, :y)
+        params.permit(:x, :y)
       end
     end
   end
