@@ -138,6 +138,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.17.2-x86_64-linux)
       racc (~> 1.4)
+    pagy (6.5.0)
     pg (1.5.9)
     pp (0.6.2)
       prettyprint
@@ -235,11 +236,12 @@ DEPENDENCIES
   debug
   faker
   jbuilder
+  pagy
   pg (~> 1.1)
   pry
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
-  redis
+  redis (>= 4.0.1)
   rspec-rails
   tzinfo-data
 

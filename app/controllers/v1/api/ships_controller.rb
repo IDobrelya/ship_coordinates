@@ -1,15 +1,21 @@
 module V1
   module Api
     class ShipsController < ApplicationController
+      include Pagy::Backend
+
       before_action :assign_ship, only: :position
       before_action :find_ship, only: :show
 
       def index
-        @ships = Ship.includes(:positions)
+        @pagy, @positions = pagy(Position.select('
+                    DISTINCT ON (positions.ship_id)
+                    positions.time as last_time, positions.status as last_status, positions.speed as last_speed,
+                    positions.position as last_position, positions.ship_id as ship_id')
+                     .order(:ship_id, time: :desc), items: 10)
       end
 
       def show
-        @positions = @ship.last_positions
+        @pagy, @positions =  pagy(@ship.positions.order(time: :desc), items: 10)
       end
 
       def position
