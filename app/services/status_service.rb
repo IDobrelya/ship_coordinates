@@ -2,7 +2,7 @@ class StatusService
   attr_reader :status
 
   STATUSES = { safe: 'green', warn: 'yellow', danger: 'red' }.freeze
-  CELL_SAFE_DISTANCE = 1
+  CELL_SAFE_DISTANCE = 0
 
   def initialize(ship_id, trajectory, speed, cache_service = RedisService.new )
     @ship_id = ship_id
@@ -13,9 +13,9 @@ class StatusService
   end
 
   def recognize_status
+    cache_current_version
     return unless ship_moving?
 
-    cache_current_version
     check_collisions
   end
 
@@ -26,25 +26,31 @@ class StatusService
   end
 
   def check_collisions
-    return if @speed[:main_speed] == 0
-
     @trajectory.each do |trajectory_key, trajectory_value|
-      chip_trajectories = @cache_service.get_trajectory(trajectory_key)
-      next if chip_trajectories.blank?
+      ship_trajectories = @cache_service.get_trajectory(trajectory_key)
+      current_trajectory = trajectory_value.first
+      @status = STATUSES[:danger] if position_occupied?(current_trajectory[:x], current_trajectory[:y])
+      return if @status == STATUSES[:danger]
 
-      detect_collisions(chip_trajectories, trajectory_value.first)
+      detect_collisions(ship_trajectories, trajectory_value.first)
     end
   end
 
   def detect_collisions(trajectories, own_trajectory)
     trajectories.each do |ship_json_data|
-      ship_data = JSON.parse(ship_json_data, symbolize_names: true) # todo: Safe parse json
+      ship_data = JSON.parse(ship_json_data, symbolize_names: true)
       next unless trajectory_data_valid?(ship_data)
 
       distance = get_distance(own_trajectory, ship_data)
       update_status_based_on(distance)
       return if status == STATUSES[:danger]
     end
+  end
+
+  def position_occupied?(point_x, point_y)
+    position_key = "positions:#{point_x}:#{point_y}"
+    occupied_by_ship = @cache_service.get_position(position_key)
+    occupied_by_ship.present?
   end
 
   def update_status_based_on(distance)
@@ -61,7 +67,7 @@ class StatusService
   def trajectory_data_valid?(trajectory_data)
     cache_key = "ship:#{trajectory_data[:ship_id]}"
     cache_version = @cache_service.version(cache_key)
-    cache_version.blank? || cache_version != trajectory_data['version']
+    cache_version.present? && cache_version != trajectory_data['version']
   end
 
   def get_distance(own_trajectory, other_trajectory)
@@ -75,6 +81,7 @@ class StatusService
     dy = (point_a[:y] - point_b[:y]).abs
     [dx, dy].max - 1
   end
+
   def save_trajectory(trajectory)
     @cache_service.batch_set_insert(trajectory)
   end

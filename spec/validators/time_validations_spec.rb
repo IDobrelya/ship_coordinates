@@ -9,7 +9,7 @@ class DummyModel
 end
 
 RSpec.describe TimeValidations, type: :model do
-  subject { DummyModel.new(time: time, previous_time: previous_time) }
+  subject { DummyModel.new(time: time, previous_time: previous_time, position: { 'x' => 100, 'y' => 200 } ) }
 
   context 'when time is nil' do
     let(:time) { nil }

@@ -22,4 +22,8 @@ class RedisService
   def smembers(key)
     $redis.smembers(key)
   end
+
+  def del(key)
+    $redis.del(key)
+  end
 end

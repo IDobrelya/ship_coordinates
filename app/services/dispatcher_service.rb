@@ -23,10 +23,16 @@ class DispatcherService
     calculate_speed
     calculate_trajectory
     @status = determine_status
-    cache_trajectory if @trajectory.present?
+    cache_positions
   end
 
   private
+
+  def cache_positions
+    cache_current_position
+    invalidate_previous_position
+    cache_trajectory if @trajectory.present?
+  end
 
   def calculate_speed
     speed_svc = @speed_service_class.new(@current_position, @previous_position)
@@ -48,5 +54,15 @@ class DispatcherService
 
   def cache_trajectory
     @cache_service.set_trajectory(@trajectory)
+  end
+
+  def cache_current_position
+    position_key = "positions:#{@current_position.position['x']}:#{@current_position.position['y']}"
+    @cache_service.set_position(position_key, @ship_id)
+  end
+
+  def invalidate_previous_position
+    position_key = "positions:#{@previous_position.position['x']}:#{@previous_position.position['y']}"
+    @cache_service.invalidate_position(position_key)
   end
 end

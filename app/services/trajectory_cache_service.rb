@@ -8,7 +8,7 @@ class TrajectoryCacheService
     @cache.get(key)
   end
 
-  # key = "ship:7b57bda6-3e4d-4700-8124-bb5f14a16ff5"
+  # key = "ship:7b57bda6-3e4d-4700-812version4-bb5f14a16ff5"
   # value = 1744960607
   def save_version(key, value)
     @cache.set(key, value)
@@ -24,5 +24,17 @@ class TrajectoryCacheService
   # key = "future:grid:1744964812:1:0"
   def get_trajectory(key)
     @cache.smembers(key)
+  end
+
+  def set_position(key, value)
+    @cache.set(key, value)
+  end
+
+  def get_position(key)
+    @cache.get(key)
+  end
+
+  def invalidate_position(key)
+    @cache.del(key)
   end
 end

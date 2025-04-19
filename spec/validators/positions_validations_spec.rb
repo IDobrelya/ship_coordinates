@@ -9,7 +9,7 @@ class DummyModel
 end
 
 RSpec.describe PositionValidations, type: :model do
-  subject { DummyModel.new(position: position) }
+  subject { DummyModel.new(position: position, time: Time.now.to_i) }
 
   context 'when position is nil' do
     let(:position) { nil }
