@@ -5,6 +5,7 @@ class DispatcherService
     ship_id,
     current_position,
     previous_position,
+    start_time,
     speed_service_class: SpeedService,
     trajectory_class: TrajectoryService,
     status_service_class: StatusService,
@@ -13,6 +14,7 @@ class DispatcherService
     @ship_id = ship_id
     @current_position = current_position
     @previous_position = previous_position
+    @start_time = start_time
     @speed_service_class = speed_service_class
     @trajectory_service_class = trajectory_class
     @status_service_class = status_service_class
@@ -41,7 +43,7 @@ class DispatcherService
   end
 
   def calculate_trajectory
-    trajectory_svc = @trajectory_service_class.new(@ship_id, @current_position, @speed)
+    trajectory_svc = @trajectory_service_class.new(@ship_id, @current_position, @speed, @start_time)
     trajectory_svc.calculate_trajectory
     @trajectory = trajectory_svc.trajectory
   end

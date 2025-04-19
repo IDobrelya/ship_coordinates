@@ -23,7 +23,8 @@ module V1
         @dispatcher_service = DispatcherService.new(
           @ship.id,
           @current_position,
-          @ship.last_position
+          @ship.last_position,
+          @current_position[:time]
         )
         @dispatcher_service.call
 
