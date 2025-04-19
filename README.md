@@ -159,7 +159,7 @@ SET ship:100:100 867ac426-aed6-4c1d-81ce-375f3c70c243
 
 **Відстань між точками рахується наступним чином:**
 
-```math
+```
 dx = point_a_x - point_b_x
 dy = point_a_y - point_b_y
 
