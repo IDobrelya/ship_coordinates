@@ -7,7 +7,7 @@ module PositionValidations
   end
 
   def position_validation
-    x, y = position.values_at('x', 'y')
+    x, y = position&.values_at('x', 'y')
     validate_on_presenting(x, y)
     validate_on_type(x, y)
   end
