@@ -18,14 +18,13 @@ services:
     build: .
     container_name: '51e6c48cab6ab5808dfabcb5'
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:create db:migrate && bin/rails server -b 0.0.0.0"
-#    command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0"
     environment:
       RAILS_ENV: development
       RAILS_MASTER_KEY: '455aac53c20aeadfd29e140b9fd2b544'
     volumes:
       - ".:/usr/src/app"
     ports:
-      - "3000:3000"
+      - "8080:3000"
     depends_on:
       - db
       - redis
