@@ -9,5 +9,4 @@ end
 json.pagination do
   json.current_page @pagy.page
   json.next_page @pagy.next
-  json.total_pages @pagy.pages
 end

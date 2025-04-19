@@ -30,7 +30,7 @@ class DispatcherService
 
   def cache_positions
     cache_current_position
-    invalidate_previous_position
+    invalidate_previous_position if @previous_position.present?
     cache_trajectory if @trajectory.present?
   end
 
