@@ -5,8 +5,16 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: ship_coordinates_redis
+    ports:
+      - "6379:6379"
 
   ship_coordinates_api:
     build: .
