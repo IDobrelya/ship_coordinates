@@ -10,6 +10,11 @@ docker compose up
 docker exec -it 51e6c48cab6ab5808dfabcb5 bundle exec rspec
 ```
 
+**To clear all data use the following endpoint:**
+```http
+POST localhost:8080/v1/api/flush
+```
+
 
 **Short explanation**
 
@@ -20,9 +25,9 @@ docker exec -it 51e6c48cab6ab5808dfabcb5 bundle exec rspec
 У 18:00:00, це `1713625200` в `UNIX timestamp` `Ship_A` відправляє свої координати:
 ```json
 {
-	time: 1713625200,
-	x: 100,
-	y: 100
+  "time": 1713625200,
+  "x": 100,
+  "y": 100
 }
 ```
 
