@@ -40,11 +40,6 @@ RSpec.describe SpeedService, type: :service do
 
       it 'calculates correct speeds and updates attribute' do
         result = service.current_speed
-
-        # dx = 20, dy = 0, time_diff = 10
-        # speed_x = (20/10).round = 2
-        # speed_y = (0/10).round = 0
-        # main_speed = (sqrt(400)/10).round = (20/10).round = 2
         expected = { main_speed: 2, speed_x: 2, speed_y: 0 }
 
         expect(result).to eq(expected)

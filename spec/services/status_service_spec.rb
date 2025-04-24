@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'pry'
 
 RSpec.describe StatusService, type: :service do
   let(:ship_id) { 'e7cf9554-f13c-449a-ad31-106ef2b1f762' }

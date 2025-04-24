@@ -12,6 +12,7 @@ module V1
       end
 
       def show
+        return render_not_found_error if @ship.blank?
         @pagy, @positions = pagy(@ship.positions.order(time: :desc), items: 10, count: 1000)
       end
 
@@ -22,7 +23,8 @@ module V1
         @dispatcher_service = DispatcherService.new(
           @ship.id,
           @current_position,
-          @ship.last_position
+          @ship.last_position,
+          @current_position[:time]
         )
         @dispatcher_service.call
 
@@ -60,8 +62,14 @@ module V1
         render json: { errors: @current_position.errors.full_messages }, status: :unprocessable_entity
       end
 
+      def render_not_found_error
+        render json: { errors: "record #{params[:id]} not found" }, status: :not_found
+      end
+
       def find_ship
         @ship = Ship.find(params[:id])
+      rescue StandardError => _
+        nil
       end
 
       def assign_ship

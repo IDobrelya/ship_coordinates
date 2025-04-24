@@ -1,7 +1,7 @@
 class TrajectoryService
   attr_reader :trajectory
 
-  DEFAULT_CELL_SIZE = 1_000
+  DEFAULT_CELL_SIZE = 6_000
   DEFAULT_TRAJECTORY_STEPS = 60
 
   def initialize(ship_id, position, speed, start_time = current_time)

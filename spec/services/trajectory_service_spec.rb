@@ -1,6 +1,4 @@
 require 'rails_helper'
-require 'rails_helper'
-require 'pry'
 
 RSpec.describe TrajectoryService, type: :service do
   let(:ship_id) { '0df66a6b-6244-4e22-9aca-1052c31769a8' }
