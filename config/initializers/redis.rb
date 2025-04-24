@@ -1,1 +1,1 @@
-$redis = Redis.new(host: 'redis', port: 6379)
+$redis = Redis.new(host: Rails.application.credentials.redis[:host], port: Rails.application.credentials.redis[:port])
