@@ -6,6 +6,8 @@ RSpec.describe 'Ship navigation flow', type: :integration do
   let(:second_ship_id) { 'f69a27dd-0948-431b-a6dd-2fb0efef4107' }
   let(:start_time) { 1745484516 }
 
+  # test comment for check CI/CD
+
   before do
     allow(TrajectoryCacheService).to receive(:new).and_return(cache_double)
 
