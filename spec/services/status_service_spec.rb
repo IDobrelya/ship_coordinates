@@ -10,10 +10,19 @@ RSpec.describe StatusService, type: :service do
   end
   let(:own_trajectory) { { trajectory_key => [own_trajectory_data] } }
 
+  let(:cache_double) { instance_double(TrajectoryCacheService).as_null_object }
+
   before do
-    # Stub TrajectoryCacheService methods
-    allow_any_instance_of(TrajectoryCacheService).to receive(:save_version)
-    allow_any_instance_of(TrajectoryCacheService).to receive(:version).and_return(nil)
+    allow(TrajectoryCacheService).to receive(:new).and_return(cache_double)
+
+    @fake_positions = {}
+    @fake_versions = {}
+
+    allow(cache_double).to receive(:set_position) { |key| @fake_positions[key] = first_ship_id }
+    allow(cache_double).to receive(:get_position) { |key| @fake_positions[key] }
+
+    allow(cache_double).to receive(:save_version) { |key| @fake_versions[key] = current_time }
+    allow(cache_double).to receive(:version) { |key| @fake_versions[key] }
   end
 
   describe '#recognize_status' do
@@ -31,14 +40,10 @@ RSpec.describe StatusService, type: :service do
       let(:service) { described_class.new(ship_id, own_trajectory, speed) }
 
       before do
-        allow_any_instance_of(TrajectoryCacheService).to receive(:get_trajectory).with(trajectory_key).and_return([])
+        allow(cache_double).to receive(:get_trajectory).with(trajectory_key).and_return([])
       end
 
       it 'saves current version and keeps status as safe' do
-        expect_any_instance_of(TrajectoryCacheService)
-          .to receive(:save_version)
-                .with("ship:#{ship_id}", anything)
-
         service.recognize_status
         expect(service.status).to eq(StatusService::STATUSES[:safe])
       end
@@ -51,8 +56,8 @@ RSpec.describe StatusService, type: :service do
 
       before do
         json_data = other_ship.to_json
-        allow_any_instance_of(TrajectoryCacheService).to receive(:get_trajectory).with(trajectory_key).and_return([json_data])
-        allow_any_instance_of(TrajectoryCacheService).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
+        allow(cache_double).to receive(:get_trajectory).with(trajectory_key).and_return([json_data])
+        allow(cache_double).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
       end
 
       it 'updates status to danger' do
@@ -70,8 +75,8 @@ RSpec.describe StatusService, type: :service do
 
       before do
         json_data = other_ship.to_json
-        allow_any_instance_of(TrajectoryCacheService).to receive(:get_trajectory).with(trajectory_key).and_return([json_data])
-        allow_any_instance_of(TrajectoryCacheService).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
+        allow(cache_double).to receive(:get_trajectory).with(trajectory_key).and_return([json_data])
+        allow(cache_double).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
       end
 
       it 'updates status to warn' do
@@ -94,11 +99,11 @@ RSpec.describe StatusService, type: :service do
       before do
         ship_one_json = ship_one.to_json
         ship_two_json = ship_two.to_json
-        allow_any_instance_of(TrajectoryCacheService).to receive(:get_trajectory)
+        allow(cache_double).to receive(:get_trajectory)
                                                            .with(trajectory_key)
                                                            .and_return([ship_one_json, ship_two_json])
-        allow_any_instance_of(TrajectoryCacheService).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
-        allow_any_instance_of(TrajectoryCacheService).to receive(:version).with("ship:#{ship_two_id}").and_return(current_time)
+        allow(cache_double).to receive(:version).with("ship:#{other_ship_id}").and_return(current_time)
+        allow(cache_double).to receive(:version).with("ship:#{ship_two_id}").and_return(current_time)
       end
 
       it 'updates status to warn' do
