@@ -29,8 +29,7 @@ RSpec.describe SpeedService, type: :service do
 
       it 'sets speed attribute to default values' do
         service.current_speed
-        # expect(service.speed).to eq(default_values)
-        expect(service.speed).to eq({}) # todo: for test CI
+        expect(service.speed).to eq(default_values)
       end
     end
 
