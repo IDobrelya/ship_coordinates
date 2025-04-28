@@ -19,6 +19,7 @@ jobs:
       - name: Lint code
         run: bundle exec rubocop
   test:
+    needs: rubocop
     runs-on: ubuntu-latest
     services:
       postgres:
